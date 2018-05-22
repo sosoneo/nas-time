@@ -36,8 +36,8 @@ TheBirthday.prototype = {
   bind: function(nickname, birthday) {
     var value = Blockchain.transaction.value;
     var from = Blockchain.transaction.from;
-    var birthday = this.birthday.get(from);
-    if(birthday){
+    var tmp = this.birthday.get(from);
+    if(tmp){
         throw new Error("This wallet has been bind birthday!")
     }
     var birthdayItem = new BirthdayItem();

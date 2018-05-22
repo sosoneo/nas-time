@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>查看生-生死计算器</title>
+    <link rel="shortcut icon" href="static/image/icon.png" type="image/vnd.microsoft.icon" />
+    <link rel="icon" href="static/image/icon.png" type="image/vnd.microsoft.icon" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="static/css/spin.css">
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="static/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="static/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="lib/nebPay.js"></script>
+    <script src="lib/nebulas.js"></script>
+    <script src="static/js/spin.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="bind.html">生死计算器</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li><a href="bind.html">绑定生辰</a></li>
+                <li><a href="index.html">查看生</a></li>
+                <li><a href="future.html">查看死</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                  <li><a href="https://blog.mouxuezha.com" target="_blank">关于我们</a></li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="alert alert-danger" role="alert" hidden="true">
+        </div>
+        
+        <div class="form-group">
+          <label for="NebulasWalletAddress" class="control-label">NebulasWalletAddress</label>
+          <input type="NebulasWalletAddress" class="form-control" id="NebulasWalletAddress" placeholder="NebulasWalletAddress">
+        </div>
+        <button type="submit" onclick="submitHandler()" class="btn btn-default">查询</button>
+
+        <hr>
+
+        <span class="time label label-default"></span>
+        
+        <hr>
+
+        <blockquote class="note-blockquote" hidden="true">
+            <p class="note"></p>
+        </blockquote>
+        
+        <div class="live">
+          <p class="year bg-primary"></p>
+          <p class="month bg-success"></p>
+          <p class="week bg-info"></p>
+          <p class="day bg-warning"></p>
+          <p class="hour bg-danger"></p>
+          <p class="minute bg-primary"></p>
+        </div>
+
+        <div class="copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <span>POWERED BY&nbsp;&nbsp;</span>
+                        <span>
+                            <a href="https://nebulas.io" target="_blank">
+                                <img src="static/image/nebulasx60.png" alt="Nebulas">
+                            </a>  
+                        </span>      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+
+    //opts 可从网站在线制作
+    var opts = {            
+      lines: 13, // 花瓣数目
+      length: 20, // 花瓣长度
+      width: 10, // 花瓣宽度
+      radius: 30, // 花瓣距中心半径
+      corners: 1, // 花瓣圆滑度 (0-1)
+      rotate: 0, // 花瓣旋转角度
+      direction: 1, // 花瓣旋转方向 1: 顺时针, -1: 逆时针
+      color: '#333333', // 花瓣颜色
+      speed: 1, // 花瓣旋转速度
+      trail: 60, // 花瓣旋转时的拖影(百分比)
+      shadow: false, // 花瓣是否显示阴影
+      hwaccel: false, //spinner 是否启用硬件加速及高速旋转            
+      className: 'spinner', // spinner css 样式名称
+      zIndex: 2e9, // spinner的z轴 (默认是2000000000)
+      top: '50%', // spinner 相对父容器Top定位 单位 px
+      left: '50%'// spinner 相对父容器Left定位 单位 px
+    };
+
+    // var birthday = Date.parse(new Date("1994/08/24"));
+    var now = Date.parse(new Date());
+
+    function calculate(birthdayStr, nickname){
+      var birthday = Date.parse(new Date(birthdayStr));
+      var timedifference = (now-birthday)/1000;
+      var year = timedifference/3600/24/365;
+      $('.year').html("&nbsp;"+parseInt(year)+" 年");
+      var month = timedifference/3600/24/30;
+      $('.month').html("&nbsp;"+parseInt(month)+" 月");
+      var week = timedifference/3600/24/7;
+      $('.week').html("&nbsp;"+parseInt(week)+" 周");
+      var day = timedifference/3600/24;
+      $('.day').html("&nbsp;"+parseInt(day)+" 天");
+      var hour = timedifference/3600;
+      $('.hour').html("&nbsp;"+parseInt(hour)+" 小时");
+      var minute = timedifference/60;
+      $('.minute').html("&nbsp;"+parseInt(minute)+" 分钟");
+      $('.note-blockquote').attr("hidden", false);
+      $('.note').html(nickname + ",你在这个有趣的世界已经坚强地生存了：");
+    }
+
+    function renderTime(){
+        var now = new Date();
+        var today = now.toDateString();
+        var time = now.toLocaleTimeString();
+        $('.time').html(today+time);
+    }
+    setInterval(renderTime, 1000);
+
+    var dappAddress = "n1zFex73it3FSBD1PaNf3fRTuLgE9zii6eB";
+    var NebPay = require("nebpay");
+    var nebPay = new NebPay();
+    var spinner = undefined;
+
+    function submitHandler() {
+        if ($("#NebulasWalletAddress").val().length === 0) {
+            alert("Please input your NebulasWalletAddress!");
+        } else {
+          spinner = new Spinner(opts).spin($('body').get(0));//显示加载
+          var to = dappAddress;
+          var value = "0";
+          var callFunction = "get";
+          var callArgs = "[\"" + $("#NebulasWalletAddress").val() + "\"]";
+          console.log(callArgs);
+          nebPay.simulateCall(to, value, callFunction, callArgs, {
+            listener: calculateHandler //指定回调函数
+          });
+        }
+    }
+
+    function calculateHandler(resp) {
+      spinner.spin();//移除加载
+      var result = resp.result;
+      var execute_err = resp["execute_err"];
+      console.log(result);
+      if (execute_err.length > 0) {
+        $('.alert').html(resp["execute_err"]);
+        $('.alert').attr("hidden", false);
+      } else if (result=="null") {
+        $('.alert').html("暂无查询到内容，请重试");
+        $('.alert').attr("hidden", false);
+      } else {
+        calculate(JSON.parse(result)["birthday"], JSON.parse(result)["nickname"])
+        $('.alert').attr("hidden", true);
+      }
+    }
+
+</script>
+</html>
